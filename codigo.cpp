@@ -5,7 +5,7 @@
 
 LiquidCrystal_I2C LCD = LiquidCrystal_I2C(0x27, 16, 2);
 
-
+const int BUZZER_PIN = 16;
 const int DHT_PIN = 15;
 const int trigPin = 5;
 const int echoPin = 18;
@@ -38,11 +38,11 @@ PubSubClient MQTT(espClient); // Instancia o Cliente MQTT passando o objeto espC
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  Serial.println("Hello, ESP32!");
   dhtSensor.setup(DHT_PIN, DHTesp::DHT22);
   LCD.init();
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  pinMode(BUZZER_PIN, OUTPUT);
   initWiFi();
   initMQTT();
 }
@@ -154,9 +154,14 @@ void verificarDist(){
   LCD.print(distanceCm);
   dtostrf(distanceCm, 4, 2, msgBuffer);
   MQTT.publish(TOPICO_PUBLISH,msgBuffer);
+  if(distanceCm <= 120){
+    MQTT.publish(TOPICO_PUBLISH,"Presença detectada");
+    Serial.println("Presença detectada");
+  }
 }
 
 void verificarTemp(){
+  noTone(BUZZER_PIN);
   char msgBuffer[4];
   TempAndHumidity  data = dhtSensor.getTempAndHumidity();
   float temp = data.temperature;
@@ -169,12 +174,24 @@ void verificarTemp(){
   Serial.println(temp);
   dtostrf(temp, 4, 2, msgBuffer);
   MQTT.publish(TOPICO_PUBLISH_2,msgBuffer);
+  if(temp >= 33){
+    MQTT.publish(TOPICO_PUBLISH_2,"Muito quente");
+    Serial.println("Temperatura muito quente");
+    tone(BUZZER_PIN, 250);
+  }
+  if(temp <= 12){
+    MQTT.publish(TOPICO_PUBLISH_2,"Muito frio");
+    Serial.println("Temperatura muito fria");
+    tone(BUZZER_PIN, 300);
+  }
 }
 
 void verificarHumi(){
+  noTone(BUZZER_PIN);
   char msgBuffer[4];
   TempAndHumidity  data = dhtSensor.getTempAndHumidity();
   float humi = data.humidity;
+  float temp = data.temperature;
   //Serial.println("Humidity: " + String(data.humidity, 1) + "%");
   LCD.clear();
   LCD.setCursor(0,0);
@@ -184,10 +201,21 @@ void verificarHumi(){
   Serial.println(humi);
   dtostrf(humi, 4, 2, msgBuffer);
   MQTT.publish(TOPICO_PUBLISH_3,msgBuffer);
+  if(humi <= 30){
+    MQTT.publish(TOPICO_PUBLISH_2,"Umidade baixa");
+    Serial.println("Umidade muito baixa");
+    tone(BUZZER_PIN, 150);
+  }
+  if(humi >= 70 && temp >= 33){
+    MQTT.publish(TOPICO_PUBLISH_2,"Umidade alta");
+    Serial.println("Umidade alta");
+    tone(BUZZER_PIN, 100);
+  }
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  noTone(BUZZER_PIN);
   VerificaConexoesWiFIEMQTT();
   /*LCD.clear();
   LCD.setCursor(0,0);
