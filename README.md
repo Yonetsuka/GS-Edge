@@ -28,6 +28,11 @@ Este projeto consiste em um sistema de monitoramento de pacientes hospitalares, 
 - **Limitações no monitoramento**
 - **Atrasos na detecção de problemas**
 
+## Registro no postman
+Para realizar este projeto, foi usado do fiware descomplicado do Professor Cabrini,<a href="https://github.com/fabiocabrini/fiware">Clique aqui para ver</a>.
+Ao baixar, voce abre o postman e exporta os comandos. Depois substitui url pelo endereço do broker, vai em "3. Provisioning a Smart Lamp", vá em body e substitua lamp e lamp001 pelo nome que voce quiser registrar e insira os tópicos que voce quiser informando o nome e tipo(int, string, float, etc).
+Por fim, verifique se o seu dispositivo foi registrado em "5. List all Devices Provisioned".
+
 ## Tecnologias utilizadas
 - WiFi:
 **Biblioteca utilizada para facilitar a conexão e configuração da rede WiFi**
