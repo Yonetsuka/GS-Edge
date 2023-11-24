@@ -6,8 +6,8 @@ Health Care é um projeto que tem como objetivo o monitoramento remoto e automá
 Este projeto consiste em um sistema de monitoramento de pacientes hospitalares, desenvolvido para acompanhar e registrar informações vitais dos pacientes em tempo real, fornecendo uma interface amigável para médicos e equipe médica.
 
 ## Membros
-- Allan Von Ivanov
-- Cássio Yonetsuka
+- Allan Von Ivanov-RM:98705
+- Cássio Yonetsuka-RM:99678
 
 ## Funcionalidades
 
